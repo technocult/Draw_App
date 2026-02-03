@@ -7,29 +7,45 @@ import com.Draw_App.model.entity.Gift;
 import com.Draw_App.model.entity.Participant;
 import com.Draw_App.service.DrawService;
 import com.Draw_App.service.DuplicationParticipantCheck;
-import com.Draw_App.service.util.GiftPriceDescComparator;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class MainApplication {
+    public static Logger LOGGER;
+
+    static {
+        try (FileInputStream fis = new FileInputStream("src/main/resources/logging.properties")) {
+            LogManager.getLogManager().readConfiguration(fis);
+            LOGGER = Logger.getLogger(MainApplication.class.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) throws IOException {
+        LOGGER.log(Level.INFO, "Start: " + LocalDateTime.now());
 
-        ArrayList<Gift> giftsList = GiftsExcelReader.read();
+        init();
 
-        ArrayList<Participant> participantsList = ParticipantsExcelReader.read();
-        DuplicationParticipantCheck duplicationParticipantCheck = new DuplicationParticipantCheck(participantsList);
-        ArrayList<Participant> noneDuplicatedParticipantList = duplicationParticipantCheck.run();
+        LOGGER.log(Level.INFO, "End: " + LocalDateTime.now());
+    }
+
+    private static void init() throws IOException {
+        List<Gift> giftsList = GiftsExcelReader.read();
+
+        List<Participant> participantsList = ParticipantsExcelReader.read();
+        List<Participant> noneDuplicatedParticipantList = DuplicationParticipantCheck.runCheck(participantsList);
 
         DrawService drawService = new DrawService(noneDuplicatedParticipantList, giftsList);
-        ArrayList<Gift> giftsListWithWinners = drawService.drawGifts();
+        List<Gift> giftsListWithWinners = drawService.drawGifts();
 
         GiftsWinnersExcelWriter.write(giftsListWithWinners);
-
-        System.out.println("The end! =)");
-
     }
 }

@@ -9,22 +9,23 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
+import static com.Draw_App.MainApplication.LOGGER;
 
 public class ParticipantsExcelReader {
     ParticipantsExcelReader() {
     }
 
-    //вопрос. я если оборачиваю в трай-кетч блоки он ругается т.к. они не в методе. норм ли что я создаю то что ниже не в методе и как в этом случае оборачивать в трай-кетч? использовать блоки инициализации?
-    public static ArrayList<Participant> read() throws IOException {
-        ArrayList<Participant> participantsList = new ArrayList<>();
-        FileInputStream fis = null; //вопрос. если я хочу и надо закрывать fis в файналли блоке то надо обязательно выносить декларацию переменной из try блока?
-        Workbook participantsWorkBook = null;
-        try {
-            final String participantsExcelPath = (new PathFinder()).getDirectoryJarPath() + "/participants.xlsx";
-            fis = new FileInputStream(participantsExcelPath);
-            /*вопрос. отпал, вроде заработало =) */
+    public static List<Participant> read() {
+        LOGGER.log(Level.INFO, "Выполняется метод ParticipantsExcelReader.read()");
+        List<Participant> participantsList = new ArrayList<>();
+        final String participantsExcelPath = new PathFinder().getDirectoryJarPath() + "/participants.xlsx";
 
-            participantsWorkBook = WorkbookFactory.create(fis);
+        try (FileInputStream fis = new FileInputStream(participantsExcelPath);
+             Workbook participantsWorkBook = WorkbookFactory.create(fis)) {
+
             Sheet participantsSheet = participantsWorkBook.getSheetAt(0);
             for (Row row : participantsSheet) {
                 Cell cell = row.getCell(0);
@@ -34,26 +35,26 @@ public class ParticipantsExcelReader {
                         break;
                     case NUMERIC:
                         if (DateUtil.isCellDateFormatted(cell)) {
-                            throw new RuntimeException("Неверный тип данных в таблице с участниками (дата).");
+                            LOGGER.log(Level.WARNING, "Ошибка при чтении списка участников. Не верный формат данных (дата) в Exel файле.");
+                            System.exit(2);
                         } else {
-                            //спорненько. хотел чтобы целочисленные значения остались а дробь выкидывала исключение
-                            if (cell.getNumericCellValue() == (int) cell.getNumericCellValue()) {
-                                participantsList.add(new Participant(String.valueOf(cell.getNumericCellValue())));
-                            } else {
-                                throw new RuntimeException("Неверный тип данных в таблице с участниками (дробные числа).");
+                            try {
+                                int intValue = Integer.parseInt(cell.getStringCellValue());
+                                participantsList.add(new Participant(String.valueOf(intValue)));
+                            } catch (NumberFormatException e) {
+                                LOGGER.log(Level.WARNING, "Ошибка при чтении списка участников. Не верный формат данных (дробные числа) в Exel файле.");
+                                System.exit(2);
                             }
                         }
                         break;
                     default:
-                        throw new RuntimeException("Неверный тип данных в таблице с участниками (должны быть текстовые или целочисленные значения).");
+                        LOGGER.log(Level.WARNING, "Ошибка при чтении списка участников. Не верный формат данных (должны быть текстовые или целочисленные значения) в Exel файле.");
+                        System.exit(2);
                 }
             }
         } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Не удалось создать FileInputStream или Workbook.");
             throw new RuntimeException(e);
-        }
-        finally {
-            fis.close();
-            participantsWorkBook.close();
         }
         return participantsList;
     }

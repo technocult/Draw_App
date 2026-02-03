@@ -31,7 +31,7 @@ public class Participant {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Participant participant = (Participant) o;
-        return Objects.equals(id, participant.id);
+        return id.equals(participant.id);
     }
 
     @Override

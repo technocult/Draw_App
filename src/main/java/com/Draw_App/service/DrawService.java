@@ -2,30 +2,35 @@ package com.Draw_App.service;
 
 import com.Draw_App.model.entity.Gift;
 import com.Draw_App.model.entity.Participant;
-import com.Draw_App.service.util.GiftPriceDescComparator;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+
+import static com.Draw_App.MainApplication.LOGGER;
 
 public class DrawService {
 
-    ArrayList<Participant> participants;
-    ArrayList<Gift> gifts;
+    private List<Participant> participants;
+    private List<Gift> gifts;
 
-    public DrawService(ArrayList<Participant> participants, ArrayList<Gift> gifts) {
+    public DrawService(List<Participant> participants, List<Gift> gifts) {
         this.participants = participants;
         this.gifts = gifts;
+        LOGGER.log(Level.INFO, "Создан экземпляр DrawService.");
     }
 
-    public ArrayList<Gift> drawGifts() {
+    public List<Gift> drawGifts() {
+        LOGGER.log(Level.INFO, "Начат розыгрыш подарков.");
         Random random = new Random();
-        ArrayList<Gift> giftsWithWinners = new ArrayList<>(gifts);
+        List<Gift> giftsWithWinners = new ArrayList<>(gifts);
         for (Gift gift : giftsWithWinners) {
             int winner = random.nextInt(participants.size());
             Participant winnerParticipant = participants.remove(winner);
             gift.setWinnerParticipant(winnerParticipant);
         }
+        LOGGER.log(Level.INFO, "Розыгрыш подарков проведён, победители определены!");
         return giftsWithWinners;
     }
 

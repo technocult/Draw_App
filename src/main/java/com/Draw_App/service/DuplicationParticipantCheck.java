@@ -2,28 +2,23 @@ package com.Draw_App.service;
 
 import com.Draw_App.model.entity.Participant;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
+import java.util.logging.Level;
+
+import static com.Draw_App.MainApplication.LOGGER;
 
 public class DuplicationParticipantCheck {
 
-    public DuplicationParticipantCheck(ArrayList<Participant> listFromExcel) {
-        this.listFromExcel = listFromExcel;
+    public DuplicationParticipantCheck() {
     }
 
-    private ArrayList<Participant> listFromExcel;
-
-    public ArrayList<Participant> run() {
-
-        HashSet<Participant> setFromExcel = new HashSet<>(listFromExcel);
-        ArrayList<Participant> result = new ArrayList<>(setFromExcel);
+    public static List<Participant> runCheck(List<Participant> listFromExcel) {
+        LOGGER.log(Level.INFO, "Выполняется метод DuplicationParticipantCheck.runCheck()");
+        Set<Participant> setFromExcel = new HashSet<>(listFromExcel);
+        List<Participant> result = new ArrayList<>(setFromExcel);
         Collections.shuffle(result);
 
-        if (listFromExcel.size() > setFromExcel.size()) {
-            System.out.println("В исходном листе участников найдено" + (listFromExcel.size() - setFromExcel.size()) + " дубликатов.");
-            //тут должно было быть логирование в файл
-        }
+        LOGGER.log(Level.INFO, "В исходном листе участников найдено" + (listFromExcel.size() - setFromExcel.size()) + " дубликатов.");
 
         return result;
     }

@@ -33,10 +33,3 @@ public class PathFinder {
     }
 
 }
-
-//Исходник:
-//String decodedPath = URLDecoder.decode(url.getPath(), "UTF-8");
-/// / Если это JAR, то путь будет к самому JAR,
-/// / чтобы получить папку, можно использовать Paths.get(decodedPath).getParent().toString();
-//String jarFilePath = Paths.get(decodedPath).toString(); // Путь к самому JAR
-//String directoryPath = Paths.get(jarFilePath).getParent().toString(); // Путь к папке

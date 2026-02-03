@@ -1,15 +1,17 @@
 package com.Draw_App.controller;
 
 import com.Draw_App.model.entity.Gift;
-import com.Draw_App.service.util.GiftPriceDescComparator;
 import com.Draw_App.service.util.PathFinder;
 import org.apache.poi.ss.usermodel.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Level;
 
+import static com.Draw_App.MainApplication.LOGGER;
 import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
 import static org.apache.poi.ss.usermodel.CellType.STRING;
 
@@ -17,15 +19,14 @@ public class GiftsExcelReader {
     GiftsExcelReader() {
     }
 
-    public static ArrayList<Gift> read() throws IOException {
-        ArrayList<Gift> giftsList = new ArrayList<>();
-        FileInputStream fis = null;
-        Workbook giftsWorkBook = null;
-        try {
-            final String giftsExcelPath = (new PathFinder()).getDirectoryJarPath() + "/gifts.xlsx";
-            fis = new FileInputStream(giftsExcelPath);
+    public static List<Gift> read() {
+        LOGGER.log(Level.INFO, "Выполняется метод GiftsExcelReader.read()");
+        List<Gift> giftsList = new ArrayList<>();
+        final String giftsExcelPath = new PathFinder().getDirectoryJarPath() + "/gifts.xlsx";
 
-            giftsWorkBook = WorkbookFactory.create(fis);
+        try (FileInputStream fis = new FileInputStream(giftsExcelPath);
+             Workbook giftsWorkBook = WorkbookFactory.create(fis)) {
+
             Sheet giftsSheet = giftsWorkBook.getSheetAt(0);
             for (Row row : giftsSheet) {
 
@@ -46,18 +47,16 @@ public class GiftsExcelReader {
                         }
                     }
                 } else {
-                    throw new RuntimeException("Неверный тип данных в таблице с подарками либо подарков ноль.");
+                    LOGGER.log(Level.INFO, "Неверный тип данных в таблице с подарками либо подарков ноль.");
                 }
             }
         } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Не удалось создать FileInputStream или Workbook.");
             throw new RuntimeException(e);
-        } finally {
-            fis.close();
-            giftsWorkBook.close();
         }
 
-        GiftPriceDescComparator comparator = new GiftPriceDescComparator();
-        giftsList.sort(comparator);
+        giftsList.sort((g1, g2) -> g2.getGiftPrice() - g1.getGiftPrice());
+        LOGGER.log(Level.INFO, "Прочитан и отсортирован в порядке убывания список подарков. Количество подарков: " + giftsList.size() + ".");
 
         return giftsList;
     }
