@@ -30,11 +30,11 @@ public class MainApplication {
     }
 
     public static void main(String[] args) throws IOException {
-        LOGGER.log(Level.INFO, "Start: " + LocalDateTime.now());
+        LOGGER.log(Level.INFO, "Start.");
 
         init();
 
-        LOGGER.log(Level.INFO, "End: " + LocalDateTime.now());
+        LOGGER.log(Level.INFO, "End.");
     }
 
     private static void init() throws IOException {

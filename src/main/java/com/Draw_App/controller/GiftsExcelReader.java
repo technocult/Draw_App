@@ -1,12 +1,13 @@
 package com.Draw_App.controller;
 
 import com.Draw_App.model.entity.Gift;
-import com.Draw_App.service.util.PathFinder;
+//import com.Draw_App.service.util.PathFinder;
 import org.apache.poi.ss.usermodel.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
+//import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,9 +23,12 @@ public class GiftsExcelReader {
     public static List<Gift> read() {
         LOGGER.log(Level.INFO, "Выполняется метод GiftsExcelReader.read()");
         List<Gift> giftsList = new ArrayList<>();
-        final String giftsExcelPath = new PathFinder().getDirectoryJarPath() + "/gifts.xlsx";
+//        final String giftsExcelPath = Paths.get(new PathFinder().getDirectoryJarPath(), "/gifts.xlsx").toString();
+//        final String giftsExcelPath = "C:/Users/Aleksandr/IdeaProjects/Draw_App/target/gifts.xlsx";
+        final String giftsExcelPath = "./gifts.xlsx";
 
-        try (FileInputStream fis = new FileInputStream(giftsExcelPath);
+        File file = new File(giftsExcelPath);
+        try (FileInputStream fis = new FileInputStream(file);
              Workbook giftsWorkBook = WorkbookFactory.create(fis)) {
 
             Sheet giftsSheet = giftsWorkBook.getSheetAt(0);

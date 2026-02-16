@@ -1,10 +1,11 @@
 package com.Draw_App.controller;
 
 import com.Draw_App.model.entity.Gift;
-import com.Draw_App.service.util.PathFinder;
+//import com.Draw_App.service.util.PathFinder;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,9 +23,10 @@ public class GiftsWinnersExcelWriter {
 
     public static void write(List<Gift> giftsWithWinners) {
         LOGGER.log(Level.INFO, "Выполняется метод GiftsWinnersExcelWriter.write()");
-        final String winnersExcelPath = new PathFinder().getDirectoryJarPath() + "/winners.xlsx";
+//        final String winnersExcelPath = new PathFinder().getDirectoryJarPath() + "/winners.xlsx";
+        final String winnersExcelPath = "./winners.xlsx";
 
-        try (FileOutputStream fos = new FileOutputStream(winnersExcelPath);
+        try (FileOutputStream fos = new FileOutputStream(new File(winnersExcelPath));
              Workbook winnersWorkBook = new XSSFWorkbook()) {
 
             Sheet sheet = winnersWorkBook.createSheet("Winners");
