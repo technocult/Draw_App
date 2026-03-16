@@ -8,6 +8,7 @@ public class Participant {
 
     public Participant() {
     }
+
     public Participant(String id) {
         this.id = id;
     }
@@ -21,10 +22,6 @@ public class Participant {
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     @Override

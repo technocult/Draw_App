@@ -13,12 +13,12 @@ public class DuplicationParticipantCheck {
     }
 
     public static List<Participant> runCheck(List<Participant> listFromExcel) {
-        LOGGER.log(Level.INFO, "Выполняется метод DuplicationParticipantCheck.runCheck()");
+        LOGGER.log(Level.INFO, "Выполняется проверка списка участников на наличие дубликатов.");
         Set<Participant> setFromExcel = new HashSet<>(listFromExcel);
         List<Participant> result = new ArrayList<>(setFromExcel);
         Collections.shuffle(result);
 
-        LOGGER.log(Level.INFO, "В исходном листе участников найдено" + (listFromExcel.size() - setFromExcel.size()) + " дубликатов.");
+        LOGGER.log(Level.INFO, "В исходном листе участников найдено " + (listFromExcel.size() - setFromExcel.size()) + " дубликатов.");
 
         return result;
     }

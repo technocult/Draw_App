@@ -18,11 +18,10 @@ public class DrawService {
     public DrawService(List<Participant> participants, List<Gift> gifts) {
         this.participants = participants;
         this.gifts = gifts;
-        LOGGER.log(Level.INFO, "Создан экземпляр DrawService.");
     }
 
     public List<Gift> drawGifts() {
-        LOGGER.log(Level.INFO, "Начат розыгрыш подарков.");
+        LOGGER.log(Level.INFO, "Начат розыгрыш подарков среди участников.");
         Random random = new Random();
         List<Gift> giftsWithWinners = new ArrayList<>(gifts);
         for (Gift gift : giftsWithWinners) {
